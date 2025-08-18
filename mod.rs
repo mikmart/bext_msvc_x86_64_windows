@@ -20,7 +20,7 @@ struct Context {
 }
 
 pub unsafe fn get_apis(targets: *mut Array<TargetAPI>) {
-    da_append(targets, TargetAPI {
+    da_append(targets, TargetAPI::V1 {
         name: c!("msvc-x86_64-windows"),
         file_ext: c!(".exe"),
         new,
