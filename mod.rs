@@ -40,6 +40,8 @@ pub unsafe fn build(ctx: *mut c_void, program: *const Program, program_path: *co
     let ctx = ctx as *mut Context;
     let output = &mut (*ctx).sb;
 
+    // MASM won't accept external declarations for names that are actually defined in this translation unit; so we need to filter them out.
+
     (*ctx).intrns.count = 0;
     (*ctx).extrns.count = 0;
 
@@ -71,12 +73,16 @@ pub unsafe fn build(ctx: *mut c_void, program: *const Program, program_path: *co
 
     sb_appendf(output, c!("includelib libcmt\n"));
 
+    // Externals could have a name that's a MASM reserved word; so we need to mangle them.
+
     for i in 0..(*ctx).extrns.count {
         let extrn = *(*ctx).extrns.items.add(i);
         sb_appendf(output, c!("alias <?%s> = <%s>\n"), extrn, extrn);
     }
 
     sb_appendf(output, c!(".code\n"));
+
+    // Names in the B program could also be a MASM reserved word; mangle them as well.
 
     for i in 0..(*program).funcs.count {
         let func = *(*program).funcs.items.add(i);
@@ -260,6 +266,8 @@ pub unsafe fn build(ctx: *mut c_void, program: *const Program, program_path: *co
         sb_appendf(output, c!("?%s endp\n"), func.name);
     }
 
+    // Note that because of the name mangling, any user inline ASM code needs to also mangle any names referenced.
+
     for i in 0..(*program).asm_funcs.count {
         let asm_func = *(*program).asm_funcs.items.add(i);
         sb_appendf(output, c!("?%s proc\n"), asm_func.name);
@@ -314,6 +322,8 @@ pub unsafe fn build(ctx: *mut c_void, program: *const Program, program_path: *co
         sb_appendf(output, c!("\n"));
     }
 
+    // Unmangle the names for external linkage. `option nokeyword` makes the keyword
+    // defunct for the rest of the program after it's used, and can't be reverted.
     // Better pray nobody uses "option", "nokeyword", "public", "extern", "proc",
     // or "end" as a function or global variable name. I can't see any way around it.
 
@@ -334,6 +344,9 @@ pub unsafe fn build(ctx: *mut c_void, program: *const Program, program_path: *co
 
     let assembly_path = temp_sprintf(c!("%s.asm"), garbage_base);
     write_entire_file(assembly_path, output.items as *const c_void, output.count);
+
+    // Compile and link separately because if you ask ml64 to do the linking as well,
+    // it unconditionally produces a mllink$.lnk garbage file in the working directory.
 
     let object_path = temp_sprintf(c!("%s.obj"), garbage_base);
     cmd_append!(

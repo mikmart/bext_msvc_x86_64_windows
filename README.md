@@ -1,5 +1,18 @@
-# MSVC codegen plugin for the Tsoding B compiler
+# MSVC Bext Codegen
 
 An MSVC codegen plugin for [bext-lang/b](https://github.com/bext-lang/b).
+It generates [MASM](https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference?view=msvc-170) assembly, which has some peculiarities. See below.
 
 For the time being must be used with [mikmart/b@msvc](https://github.com/mikmart/b/tree/msvc) to compile the compiler with MSVC.
+
+## Requirements
+
+`ml64` and `link` in your `PATH`. See [Microsoft documentation](https://learn.microsoft.com/en-us/cpp/build/building-on-the-command-line?view=msvc-170) for setting up your environment.
+
+## Limitations
+
+MASM has a lot of reserved words, and no proper escape hatch to use them as names.
+To work around this, names in the generated assembly are mangled. There are 2 implications:
+
+* Any inline assembly code in B must prefix names with `?`.
+* Still not all names can be used; in particular the keywords required to implement the mangling scheme.
