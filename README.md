@@ -3,7 +3,7 @@
 An MSVC codegen plugin for [bext-lang/b](https://github.com/bext-lang/b).
 It generates [MASM](https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference?view=msvc-170) assembly, which has some peculiarities. See below.
 
-For the time being must be used with [mikmart/b@msvc](https://github.com/mikmart/b/tree/msvc) to compile the compiler with MSVC.
+When used with an MSVC build of the compiler, this plugin lets you work on Windows without the need for a GNU toolchain. For the time being must be used with [mikmart/b@msvc](https://github.com/mikmart/b/tree/msvc) to compile the compiler with MSVC.
 
 ## Requirements
 

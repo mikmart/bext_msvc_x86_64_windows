@@ -31,6 +31,7 @@ pub unsafe fn get_apis(targets: *mut Array<TargetAPI>) {
 
 pub unsafe fn new(a: *mut Arena, _args: *const [*const c_char]) -> Option<*mut c_void> {
     let ctx = arena::alloc_type::<Context>(a);
+    // TODO: Handle codegen args.
     Some(ctx as _)
 }
 
