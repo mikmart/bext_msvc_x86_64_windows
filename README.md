@@ -14,5 +14,5 @@ For the time being must be used with [mikmart/b@msvc](https://github.com/mikmart
 MASM has a lot of reserved words, and no proper escape hatch to use them as names.
 To work around this, names in the generated assembly are mangled. There are 2 implications:
 
-* Any inline assembly code in B must prefix names with `?`.
+* Any inline assembly code in B must prefix names with `?`; e.g. `call printf` becomes `call ?printf`.
 * Still not all names can be used; in particular the keywords required to implement the mangling scheme.
