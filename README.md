@@ -28,4 +28,11 @@ MASM has a lot of reserved words, and no proper escape hatch to use them as name
 To work around this, names in the generated assembly are mangled. There are 2 implications:
 
 * Any inline assembly code in B must prefix names with `?`; e.g. `call printf` becomes `call ?printf`.
-* Still not all names can be used; in particular the keywords required to implement the mangling scheme.
+* Still not all names can be used; in particular the keywords required to implement the mangling scheme:
+    * `option`
+    * `nokeyword`
+    * `public`
+    * `extern`
+    * `proc`
+    * `qword`
+    * `end`
